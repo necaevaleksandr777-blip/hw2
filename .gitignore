@@ -1,0 +1,11 @@
+.venv/
+.idea/
+dist/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ruff_cache/
+.pytest_cache/
+db_meta.json
+data/
+
