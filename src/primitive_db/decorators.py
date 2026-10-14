@@ -2,6 +2,8 @@ import time
 
 
 def handle_db_errors(func):
+    """Обрабатывает ошибки базы данных."""
+
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -23,6 +25,7 @@ def handle_db_errors(func):
 
 
 def confirm_action(action_name):
+    """Запрашивает подтверждение действия."""
 
     def decorator(func):
         def wrapper(*args, **kwargs):
@@ -38,6 +41,7 @@ def confirm_action(action_name):
 
 
 def log_time(func):
+    """Печатает время выполнения функции."""
 
     def wrapper(*args, **kwargs):
         started_at = time.monotonic()
@@ -50,6 +54,7 @@ def log_time(func):
 
 
 def create_cacher():
+    """Создает замыкание с кэшем."""
 
     cache = {}
 

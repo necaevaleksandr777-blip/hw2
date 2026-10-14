@@ -11,6 +11,8 @@ cache_select_result = create_cacher()
 
 
 def get_schema(metadata, table_name):
+    """Возвращает схему таблицы."""
+
     if table_name not in metadata:
         raise KeyError(table_name)
 
@@ -28,6 +30,8 @@ def get_schema(metadata, table_name):
 
 
 def validate_value(value, expected_type):
+    """Проверяет тип значения."""
+
     if expected_type == "int":
         is_valid = isinstance(value, int) and not isinstance(value, bool)
     elif expected_type == "bool":
@@ -42,6 +46,8 @@ def validate_value(value, expected_type):
 
 
 def validate_changes(metadata, table_name, changes):
+    """Проверяет данные для обновления."""
+
     schema = get_schema(metadata, table_name)
     for column_name, value in changes.items():
         if column_name not in schema:
@@ -97,6 +103,8 @@ def drop_table(metadata, table_name):
 
 
 def list_tables(metadata):
+    """Выводит список таблиц."""
+
     if not metadata:
         print("В базе данных пока нет таблиц.")
         return []
@@ -130,6 +138,8 @@ def insert(metadata, table_name, values):
 
 
 def _make_select_key(table_data, where_clause):
+    """Создает ключ для кэша."""
+
     rows_key = tuple(tuple(sorted(row.items())) for row in table_data)
     where_key = tuple(sorted(where_clause.items())) if where_clause else None
     return rows_key, where_key
@@ -138,7 +148,7 @@ def _make_select_key(table_data, where_clause):
 @handle_db_errors
 @log_time
 def select(table_data, where_clause=None):
-    """Возвращает все записи или записи, по условию"""
+    """Возвращает записи по условию."""
 
     if where_clause and table_data:
         for column_name in where_clause:
@@ -193,7 +203,7 @@ def delete(table_data, where_clause):
 
 @handle_db_errors
 def info(metadata, table_name):
-    """Печатает схему и колво записей таблицы."""
+    """Печатает схему и количество записей."""
 
     schema = get_schema(metadata, table_name)
     table_data = load_table_data(table_name)

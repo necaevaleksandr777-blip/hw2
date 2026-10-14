@@ -4,7 +4,7 @@ import shlex
 
 from prettytable import PrettyTable
 
-from primitive_db.constants import META_FILE
+from primitive_db.constants import ID_COLUMN, META_FILE
 from primitive_db.core import (
     create_table,
     delete,
@@ -46,6 +46,8 @@ def print_help():
 
 
 def print_table(rows, columns):
+    """Печатает данные в виде таблицы."""
+
     table = PrettyTable()
     table.field_names = columns
     for row in rows:
@@ -54,6 +56,8 @@ def print_table(rows, columns):
 
 
 def _require_argument_count(arguments, minimum, example):
+    """Проверяет количество аргументов."""
+
     if len(arguments) < minimum:
         raise ValueError(f"Некорректная команда. Пример: {example}")
 
@@ -68,6 +72,8 @@ def _text_after(command, marker):
 
 
 def _handle_create(metadata, arguments):
+    """Обрабатывает создание таблицы."""
+
     _require_argument_count(
         arguments,
         3,
@@ -80,6 +86,8 @@ def _handle_create(metadata, arguments):
 
 
 def _handle_drop(metadata, arguments):
+    """Обрабатывает удаление таблицы."""
+
     _require_argument_count(arguments, 2, "drop_table users")
     table_name = arguments[1]
     result = drop_table(metadata, table_name)
@@ -89,6 +97,8 @@ def _handle_drop(metadata, arguments):
 
 
 def _handle_insert(metadata, command, arguments):
+    """Обрабатывает добавление записи."""
+
     _require_argument_count(
         arguments,
         5,
@@ -104,6 +114,8 @@ def _handle_insert(metadata, command, arguments):
 
 
 def _handle_select(metadata, command, arguments):
+    """Обрабатывает выборку записей."""
+
     _require_argument_count(arguments, 3, "select from users")
     if arguments[1].lower() != "from":
         raise ValueError("После select должно быть слово from.")
@@ -122,6 +134,8 @@ def _handle_select(metadata, command, arguments):
 
 
 def _handle_update(metadata, command, arguments):
+    """Обрабатывает обновление записей."""
+
     _require_argument_count(
         arguments,
         8,
@@ -148,7 +162,7 @@ def _handle_update(metadata, command, arguments):
 
     table_data = load_table_data(table_name)
     changed_ids = [
-        row.get("ID")
+        row.get(ID_COLUMN)
         for row in table_data
         if all(row.get(key) == value for key, value in where_clause.items())
     ]
@@ -165,6 +179,8 @@ def _handle_update(metadata, command, arguments):
 
 
 def _handle_delete(metadata, command, arguments):
+    """Обрабатывает удаление записей."""
+
     _require_argument_count(
         arguments,
         7,
@@ -182,7 +198,7 @@ def _handle_delete(metadata, command, arguments):
 
     table_data = load_table_data(table_name)
     deleted_ids = [
-        row.get("ID")
+        row.get(ID_COLUMN)
         for row in table_data
         if all(row.get(key) == value for key, value in where_clause.items())
     ]
@@ -199,6 +215,8 @@ def _handle_delete(metadata, command, arguments):
 
 
 def process_command(command, metadata):
+    """Разбирает и выполняет команду."""
+
     arguments = shlex.split(command)
     if not arguments:
         return True
@@ -232,6 +250,8 @@ def process_command(command, metadata):
 
 
 def run():
+    """Запускает основной цикл программы."""
+
     print_help()
     while True:
         metadata = load_metadata(META_FILE)
